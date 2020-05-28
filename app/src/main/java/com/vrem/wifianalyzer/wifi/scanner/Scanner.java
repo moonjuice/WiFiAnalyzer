@@ -21,15 +21,22 @@ package com.vrem.wifianalyzer.wifi.scanner;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.os.Handler;
+import android.text.format.DateFormat;
 
 import com.vrem.wifianalyzer.settings.Settings;
 import com.vrem.wifianalyzer.wifi.model.WiFiData;
+import com.vrem.wifianalyzer.wifi.model.WiFiDetail;
 
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.IterableUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 
@@ -41,6 +48,7 @@ class Scanner implements ScannerService {
     private WiFiManagerWrapper wiFiManagerWrapper;
     private Cache cache;
     private PeriodicScan periodicScan;
+    JSONArray mResult = new JSONArray();
 
     Scanner(@NonNull WiFiManagerWrapper wiFiManagerWrapper, @NonNull Handler handler, @NonNull Settings settings) {
         this.updateNotifiers = new ArrayList<>();
@@ -58,6 +66,18 @@ class Scanner implements ScannerService {
         scanResults();
         wiFiData = transformer.transformToWiFiData(cache.getScanResults(), cache.getWifiInfo());
         IterableUtils.forEach(updateNotifiers, new UpdateClosure());
+        try {
+            for (WiFiDetail detail : wiFiData.getWiFiDetails()) {
+                JSONObject object = new JSONObject();
+                    object.put("SSID", detail.getSSID());
+                object.put("level", detail.getWiFiSignal().getLevel());
+                object.put("distance", detail.getWiFiSignal().getDistance());
+                object.put("actualTimestamp", getDate(detail.getTimeStamp() /1000));
+                mResult.put(object);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -96,6 +116,11 @@ class Scanner implements ScannerService {
         if (settings.isWiFiOffOnExit()) {
             wiFiManagerWrapper.disableWiFi();
         }
+    }
+
+    @Override
+    public JSONArray getWiFiDataAsJson() {
+        return mResult;
     }
 
     @NonNull
@@ -137,5 +162,12 @@ class Scanner implements ScannerService {
         public void execute(UpdateNotifier updateNotifier) {
             updateNotifier.update(wiFiData);
         }
+    }
+
+    private String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.TAIWAN);
+        cal.setTimeInMillis(time * 1000);
+        String date = DateFormat.format("yyyy-MM-dd HH:mm:ss", cal).toString();
+        return date;
     }
 }

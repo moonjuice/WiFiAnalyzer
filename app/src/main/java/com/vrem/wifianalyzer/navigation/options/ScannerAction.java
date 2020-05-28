@@ -18,8 +18,24 @@
 
 package com.vrem.wifianalyzer.navigation.options;
 
+import android.os.Environment;
+import android.util.Log;
+
 import com.vrem.wifianalyzer.MainContext;
+import com.vrem.wifianalyzer.wifi.model.WiFiData;
 import com.vrem.wifianalyzer.wifi.scanner.ScannerService;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 class ScannerAction implements Action {
     @Override
@@ -27,8 +43,28 @@ class ScannerAction implements Action {
         ScannerService scannerService = MainContext.INSTANCE.getScannerService();
         if (scannerService.isRunning()) {
             scannerService.pause();
+            saveData(scannerService.getWiFiDataAsJson());
         } else {
             scannerService.resume();
+        }
+    }
+
+    private void saveData(JSONArray wiFiData) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        File textFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDateandTime + ".json");
+        try {
+            Log.d("moon", textFile.getAbsolutePath());
+            FileOutputStream f = new FileOutputStream(textFile);
+            PrintWriter pw = new PrintWriter(f);
+            pw.print(wiFiData.toString());
+            pw.flush();
+            pw.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            Log.i("moon", "******* File not found. Did you add a WRITE_EXTERNAL_STORAGE permission to the manifest?");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

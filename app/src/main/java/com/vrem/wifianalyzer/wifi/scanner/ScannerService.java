@@ -22,6 +22,8 @@ import com.vrem.wifianalyzer.wifi.model.WiFiData;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
+
 public interface ScannerService {
     void update();
 
@@ -39,4 +41,6 @@ public interface ScannerService {
     void resume();
 
     void stop();
+
+    JSONArray getWiFiDataAsJson();
 }
