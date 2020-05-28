@@ -18,6 +18,7 @@
 
 package com.vrem.wifianalyzer.navigation.options;
 
+import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.util.Log;
 
@@ -61,6 +62,7 @@ class ScannerAction implements Action {
             pw.flush();
             pw.close();
             f.close();
+            MediaScannerConnection.scanFile(MainContext.INSTANCE.getContext(), new String[] { textFile.getAbsolutePath() }, null, null);
         } catch (FileNotFoundException e) {
             Log.i("moon", "******* File not found. Did you add a WRITE_EXTERNAL_STORAGE permission to the manifest?");
         } catch (IOException e) {
