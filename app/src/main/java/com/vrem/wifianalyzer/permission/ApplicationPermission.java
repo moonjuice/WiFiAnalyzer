@@ -29,7 +29,7 @@ import com.vrem.util.BuildUtils;
 import androidx.annotation.NonNull;
 
 class ApplicationPermission {
-    static final String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
+    static final String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     static final int REQUEST_CODE = 0x123450;
 
     private final Activity activity;
@@ -64,7 +64,9 @@ class ApplicationPermission {
 
     @TargetApi(Build.VERSION_CODES.M)
     private boolean isGrantedAndroidM() {
-        return activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
 }

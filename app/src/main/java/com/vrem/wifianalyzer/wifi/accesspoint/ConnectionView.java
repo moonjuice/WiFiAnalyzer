@@ -19,6 +19,9 @@
 package com.vrem.wifianalyzer.wifi.accesspoint;
 
 import android.net.wifi.WifiInfo;
+import android.os.Environment;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -32,9 +35,21 @@ import com.vrem.wifianalyzer.wifi.model.WiFiData;
 import com.vrem.wifianalyzer.wifi.model.WiFiDetail;
 import com.vrem.wifianalyzer.wifi.scanner.UpdateNotifier;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ConnectionView implements UpdateNotifier {
     private final MainActivity mainActivity;
@@ -52,6 +67,7 @@ public class ConnectionView implements UpdateNotifier {
         ConnectionViewType connectionViewType = MainContext.INSTANCE.getSettings().getConnectionViewType();
         displayConnection(wiFiData, connectionViewType);
         displayNoData(wiFiData);
+        saveData(wiFiData);
     }
 
     void setAccessPointDetail(@NonNull AccessPointDetail accessPointDetail) {
@@ -119,4 +135,39 @@ public class ConnectionView implements UpdateNotifier {
         }
     }
 
+    private void saveData(WiFiData wiFiData) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        File textFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), currentDateandTime + ".json");
+        try {
+            JSONArray result = new JSONArray();
+            for (WiFiDetail detail : wiFiData.getWiFiDetails()) {
+                JSONObject object = new JSONObject();
+                object.put("SSID", detail.getSSID());
+                object.put("level", detail.getWiFiSignal().getLevel());
+                object.put("distance", detail.getWiFiSignal().getDistance());
+                object.put("actualTimestamp", getDate(detail.getTimeStamp() /1000));
+                result.put(object);
+            }
+            Log.d("moon", textFile.getAbsolutePath());
+            FileOutputStream f = new FileOutputStream(textFile);
+            PrintWriter pw = new PrintWriter(f);
+            pw.print(result.toString());
+            pw.flush();
+            pw.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            Log.i("moon", "******* File not found. Did you" +
+                    " add a WRITE_EXTERNAL_STORAGE permission to the   manifest?");
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.TAIWAN);
+        cal.setTimeInMillis(time * 1000);
+        String date = DateFormat.format("yyyy-MM-dd HH:mm:ss", cal).toString();
+        return date;
+    }
 }

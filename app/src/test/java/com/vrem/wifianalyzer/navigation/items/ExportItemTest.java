@@ -80,7 +80,7 @@ public class ExportItemTest {
         scanner = MainContextHelper.INSTANCE.getScannerService();
 
         wiFiDetail = new WiFiDetail("SSID", "BSSID", "capabilities",
-            new WiFiSignal(2412, 2422, WiFiWidth.MHZ_40, -40, true));
+            new WiFiSignal(2412, 2422, WiFiWidth.MHZ_40, -40, true), scanResult.timestamp);
 
         fixture = new ExportItem() {
             @Override

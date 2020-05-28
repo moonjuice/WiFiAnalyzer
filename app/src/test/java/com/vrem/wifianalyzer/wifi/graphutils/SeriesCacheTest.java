@@ -207,7 +207,7 @@ public class SeriesCacheTest {
 
     private WiFiDetail makeWiFiDetail(String SSID) {
         return new WiFiDetail(SSID, "BSSID", StringUtils.EMPTY,
-            new WiFiSignal(100, 100, WiFiWidth.MHZ_20, 5, true));
+            new WiFiSignal(100, 100, WiFiWidth.MHZ_20, 5, true), scanResult.timestamp);
     }
 
     private List<WiFiDetail> withData() {

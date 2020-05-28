@@ -31,7 +31,7 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 
 public class WiFiDetail implements Comparable<WiFiDetail> {
-    public static final WiFiDetail EMPTY = new WiFiDetail(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, WiFiSignal.EMPTY);
+    public static final WiFiDetail EMPTY = new WiFiDetail(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, WiFiSignal.EMPTY, 0);
     private static final String SSID_EMPTY = "*hidden*";
 
     private final List<WiFiDetail> children;
@@ -40,23 +40,25 @@ public class WiFiDetail implements Comparable<WiFiDetail> {
     private final String capabilities;
     private final WiFiSignal wiFiSignal;
     private final WiFiAdditional wiFiAdditional;
+    private final long timestamp;
 
     public WiFiDetail(@NonNull String SSID, @NonNull String BSSID, @NonNull String capabilities,
-                      @NonNull WiFiSignal wiFiSignal, @NonNull WiFiAdditional wiFiAdditional) {
+                      @NonNull WiFiSignal wiFiSignal, @NonNull WiFiAdditional wiFiAdditional, long timestamp) {
         this.SSID = SSID;
         this.BSSID = BSSID;
         this.capabilities = capabilities;
         this.wiFiSignal = wiFiSignal;
         this.wiFiAdditional = wiFiAdditional;
         this.children = new ArrayList<>();
+        this.timestamp = timestamp;
     }
 
-    public WiFiDetail(@NonNull String SSID, @NonNull String BSSID, @NonNull String capabilities, @NonNull WiFiSignal wiFiSignal) {
-        this(SSID, BSSID, capabilities, wiFiSignal, WiFiAdditional.EMPTY);
+    public WiFiDetail(@NonNull String SSID, @NonNull String BSSID, @NonNull String capabilities, @NonNull WiFiSignal wiFiSignal, long timestamp) {
+        this(SSID, BSSID, capabilities, wiFiSignal, WiFiAdditional.EMPTY, timestamp);
     }
 
     public WiFiDetail(@NonNull WiFiDetail wiFiDetail, @NonNull WiFiAdditional wiFiAdditional) {
-        this(wiFiDetail.SSID, wiFiDetail.BSSID, wiFiDetail.getCapabilities(), wiFiDetail.getWiFiSignal(), wiFiAdditional);
+        this(wiFiDetail.SSID, wiFiDetail.BSSID, wiFiDetail.getCapabilities(), wiFiDetail.getWiFiSignal(), wiFiAdditional, 0);
     }
 
     @NonNull
@@ -151,4 +153,7 @@ public class WiFiDetail implements Comparable<WiFiDetail> {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    public long getTimeStamp() {
+        return this.timestamp;
+    }
 }

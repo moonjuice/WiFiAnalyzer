@@ -29,7 +29,7 @@ class ExportSpec {
 
     private val timestamp = "timestamp"
 
-    private val wiFiDetails = listOf(WiFiDetail("SSID", "BSSID", "capabilities", WiFiSignal(2412, 2422, WiFiWidth.MHZ_40, -40, true)))
+    private val wiFiDetails = listOf(WiFiDetail("SSID", "BSSID", "capabilities", WiFiSignal(2412, 2422, WiFiWidth.MHZ_40, -40, true), scanResult.timestamp))
 
     @Test
     fun `getData should evaluate to an export string`() {

@@ -69,7 +69,7 @@ public class WiFiDetailTest {
     public void testGetTitleWithEmptySSID() {
         // setup
         String expectedTitle = "*hidden* (" + BSSID + ")";
-        fixture = new WiFiDetail(StringUtils.EMPTY, BSSID, CAPABILITIES, wiFiSignal);
+        fixture = new WiFiDetail(StringUtils.EMPTY, BSSID, CAPABILITIES, wiFiSignal, scanResult.timestamp);
         // validate
         assertEquals(expectedTitle, fixture.getTitle());
     }
@@ -77,7 +77,7 @@ public class WiFiDetailTest {
     @Test
     public void testEquals() {
         // setup
-        WiFiDetail other = new WiFiDetail(SSID, BSSID, CAPABILITIES, wiFiSignal);
+        WiFiDetail other = new WiFiDetail(SSID, BSSID, CAPABILITIES, wiFiSignal, scanResult.timestamp);
         // execute & validate
         assertEquals(fixture, other);
         assertNotSame(fixture, other);
@@ -86,7 +86,7 @@ public class WiFiDetailTest {
     @Test
     public void testHashCode() {
         // setup
-        WiFiDetail other = new WiFiDetail(SSID, BSSID, CAPABILITIES, wiFiSignal);
+        WiFiDetail other = new WiFiDetail(SSID, BSSID, CAPABILITIES, wiFiSignal, scanResult.timestamp);
         // execute & validate
         assertEquals(fixture.hashCode(), other.hashCode());
     }
@@ -94,7 +94,7 @@ public class WiFiDetailTest {
     @Test
     public void testCompareTo() {
         // setup
-        WiFiDetail other = new WiFiDetail(SSID, BSSID, CAPABILITIES, wiFiSignal);
+        WiFiDetail other = new WiFiDetail(SSID, BSSID, CAPABILITIES, wiFiSignal, scanResult.timestamp);
         // execute & validate
         assertEquals(0, fixture.compareTo(other));
     }
@@ -102,7 +102,7 @@ public class WiFiDetailTest {
     @Test
     public void testIsHidden() {
         // setup
-        fixture = new WiFiDetail(StringUtils.EMPTY, BSSID, CAPABILITIES, wiFiSignal);
+        fixture = new WiFiDetail(StringUtils.EMPTY, BSSID, CAPABILITIES, wiFiSignal, scanResult.timestamp);
         // execute & validate
         assertTrue(fixture.isHidden());
     }
@@ -110,7 +110,7 @@ public class WiFiDetailTest {
     @Test
     public void testWiFiDetailCopyConstructor() {
         // setup
-        WiFiDetail expected = new WiFiDetail(StringUtils.EMPTY, BSSID, CAPABILITIES, wiFiSignal);
+        WiFiDetail expected = new WiFiDetail(StringUtils.EMPTY, BSSID, CAPABILITIES, wiFiSignal, scanResult.timestamp);
         // execute
         WiFiDetail actual = new WiFiDetail(expected, expected.getWiFiAdditional());
         // validate

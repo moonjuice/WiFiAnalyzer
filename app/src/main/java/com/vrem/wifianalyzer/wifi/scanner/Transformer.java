@@ -113,7 +113,7 @@ class Transformer {
             WiFiWidth wiFiWidth = getWiFiWidth(scanResult);
             int centerFrequency = getCenterFrequency(scanResult, wiFiWidth);
             WiFiSignal wiFiSignal = new WiFiSignal(scanResult.frequency, centerFrequency, wiFiWidth, input.getLevelAverage(), is80211mc(scanResult));
-            return new WiFiDetail(scanResult.SSID, scanResult.BSSID, scanResult.capabilities, wiFiSignal);
+            return new WiFiDetail(scanResult.SSID, scanResult.BSSID, scanResult.capabilities, wiFiSignal, scanResult.timestamp);
         }
     }
 
