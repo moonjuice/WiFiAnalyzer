@@ -48,7 +48,7 @@ class Scanner implements ScannerService {
     private WiFiManagerWrapper wiFiManagerWrapper;
     private Cache cache;
     private PeriodicScan periodicScan;
-    JSONArray mResult = new JSONArray();
+    private JSONArray mResult = new JSONArray();
 
     Scanner(@NonNull WiFiManagerWrapper wiFiManagerWrapper, @NonNull Handler handler, @NonNull Settings settings) {
         this.updateNotifiers = new ArrayList<>();
@@ -108,6 +108,7 @@ class Scanner implements ScannerService {
 
     @Override
     public void resume() {
+        mResult = new JSONArray();
         periodicScan.start();
     }
 
