@@ -22,6 +22,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.os.Handler;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.vrem.wifianalyzer.settings.Settings;
 import com.vrem.wifianalyzer.wifi.model.WiFiData;
@@ -67,14 +68,17 @@ class Scanner implements ScannerService {
         wiFiData = transformer.transformToWiFiData(cache.getScanResults(), cache.getWifiInfo());
         IterableUtils.forEach(updateNotifiers, new UpdateClosure());
         try {
+            Log.i("moon", "number:" + wiFiData.getWiFiDetails().size() + "-------------------------");
             for (WiFiDetail detail : wiFiData.getWiFiDetails()) {
                 JSONObject object = new JSONObject();
+                Log.i("moon", "SSID:" + detail.getSSID());
                     object.put("SSID", detail.getSSID());
                 object.put("level", detail.getWiFiSignal().getLevel());
                 object.put("distance", detail.getWiFiSignal().getDistance());
                 object.put("actualTimestamp", getDate(detail.getTimeStamp() /1000));
                 mResult.put(object);
             }
+            Log.i("moon", "----------------------------------");
         } catch (JSONException e) {
             e.printStackTrace();
         }
